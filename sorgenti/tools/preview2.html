@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{background:#2a2438;margin:0}canvas{image-rendering:pixelated}</style></head>
+<body><canvas id="c"></canvas>
+<script src="../dist/game.js"></script>
+<script>
+const SC = 7, costumes = location.hash ? location.hash.slice(1).split(',') : ['rossa'];
+const cv = document.getElementById('c');
+cv.width = 6*64*SC; cv.height = 76*SC*costumes.length;
+const ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled=false;
+const [lc, lctx] = makeCanvas(6*64, 76*costumes.length);
+lctx.fillStyle='#3a3350'; lctx.fillRect(0,0,lc.width,lc.height);
+costumes.forEach((co, ri) => CAST.forEach((c, ci) => {
+  const A = animsFor(c);
+  const f = getFrame(c.look, co, A.idle[0].p, 'idle0');
+  drawSprite(lctx, f, ci*64+30, ri*76+72, 1);
+}));
+ctx.drawImage(lc, 0, 0, lc.width*SC, lc.height*SC);
+</script></body></html>

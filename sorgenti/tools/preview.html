@@ -1,0 +1,23 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{background:#2a2438;margin:0}canvas{image-rendering:pixelated}</style></head>
+<body><canvas id="c"></canvas>
+<script src="../dist/game.js"></script>
+<script>
+const SC = 3;
+const cv = document.getElementById('c');
+const anims = ['idle','walk','l1','l3','l4','heavy','jatk','hurt','knock','down','getup','victory','sp'];
+cv.width = 13*70*SC; cv.height = CAST.length*90*SC + 40;
+const ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled=false;
+const [lc, lctx] = makeCanvas(13*70, CAST.length*90);
+lctx.fillStyle='#3a3350'; lctx.fillRect(0,0,lc.width,lc.height);
+CAST.forEach((c, ci) => {
+  const A = animsFor(c);
+  anims.forEach((an, ai) => {
+    const fr = A[an]; if(!fr) return;
+    const idx = (an==='l1'||an==='l3'||an==='l4'||an==='heavy') ? 1 : (an==='sp' ? Math.min(1, fr.length-1) : 0);
+    const f = getFrame(c.look, 'rossa', fr[idx].p, an+idx);
+    lctx.fillStyle='rgba(0,0,0,0.35)'; lctx.fillRect(ai*70+20, ci*90+80, 30, 3);
+    drawSprite(lctx, f, ai*70+35, ci*90+82, 1);
+  });
+});
+ctx.drawImage(lc, 0, 0, lc.width*SC, lc.height*SC);
+</script></body></html>

@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#000}canvas{image-rendering:pixelated}</style></head>
+<body><canvas id="c" width="512" height="512"></canvas>
+<script src="../dist/game.js"></script>
+<script>
+// icona dell'app: fondo scuro, musicista in posa di vittoria, titolo col font del gioco
+const cv = document.getElementById('c'), ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
+const g = ctx.createLinearGradient(0, 0, 0, 512); g.addColorStop(0, '#2a1650'); g.addColorStop(1, '#0e0818');
+ctx.fillStyle = g; ctx.fillRect(0, 0, 512, 512);
+for (let y = 0; y < 512; y += 16) { ctx.fillStyle = 'rgba(255,255,255,0.025)'; ctx.fillRect(0, y, 512, 8); }
+ctx.fillStyle = '#ff2a6d'; ctx.fillRect(0, 0, 512, 10); ctx.fillRect(0, 502, 512, 10);
+const [lc, l] = makeCanvas(128 * RS, 128 * RS); l.setTransform(RS, 0, 0, RS, 0, 0); l.imageSmoothingEnabled = false;
+const c = CAST[1], A = animsFor(c), fr = A.heavy[A.heavy.length - 1];
+const f = getFrame(c.look, 'rossa', fr.p, 'icon');
+pixelShadow(l, 64, 118, 20, 5); drawSprite(l, f, 64, 118, 1);
+ctx.drawImage(lc, 0, 0, lc.width, lc.height, 96, 70, 320, 320);
+const [tc, t] = makeCanvas(128 * RS, 40 * RS); t.setTransform(RS, 0, 0, RS, 0, 0); t.imageSmoothingEnabled = false;
+drawText(t, 'THE ANABLES', 64, 2, '#ffd23e', { align: 'center', scale: 2, outline: '#3a1a00' });
+drawText(t, 'ROCK \'N\' BRAWL', 64, 20, '#ff4fa0', { align: 'center', outline: '#2a0a20' });
+ctx.drawImage(tc, 0, 0, tc.width, tc.height, 16, 390, 480, 120);
+</script></body></html>

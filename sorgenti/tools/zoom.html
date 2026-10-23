@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{background:#2a2438;margin:0}canvas{image-rendering:pixelated}</style></head>
+<body><canvas id="c"></canvas>
+<script src="../dist/game.js"></script>
+<script>
+// anteprima delle pose del cast ad alta risoluzione: ?a=anim&i=frame&s=zoom&c=costumi
+const q = new URLSearchParams(location.search);
+const SC = +(q.get('s') || 2), an = q.get('a') || 'idle', idx = +(q.get('i') || 0);
+const cos = (q.get('c') || 'rossa,oro,bianca,azzurra,rossa,oro').split(',');
+const who = q.get('e');   // e=1: nemici invece del cast
+const CW = 84, CH = 128;
+const list = who ? Object.keys(ENEMY_LOOKS).map(k => ({ look: ENEMY_LOOKS[k], A: enemyAnims(k === 'duca' ? 'boss' : 'brawler') })) : CAST.map(c => ({ look: c.look, A: animsFor(c) }));
+const off = +(q.get('o') || 0), cnt = +(q.get('n') || 99); list.splice(0, off); list.splice(cnt);
+Atlas.load().then(() => {
+const cv = document.getElementById('c'); cv.width = list.length * CW * RS * SC; cv.height = CH * RS * SC;
+const [lc, l] = makeCanvas(list.length * CW * RS, CH * RS); l.setTransform(RS, 0, 0, RS, 0, 0); l.imageSmoothingEnabled = false;
+l.fillStyle = '#463e5c'; l.fillRect(0, 0, list.length * CW, CH);
+l.fillStyle = '#2e2838'; l.fillRect(0, CH - 14, list.length * CW, 14);
+list.forEach((c, ci) => {
+  const fr = c.A[an] || c.A.idle; const i = Math.min(idx, fr.length - 1);
+  const f = getFrame(c.look, who ? 'own' : cos[ci % cos.length], fr[i].p, an + i);
+  pixelShadow(l, ci * CW + 40, CH - 8, 16, 3);
+  drawSprite(l, f, ci * CW + 40, CH - 8, 1);
+});
+const ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
+ctx.drawImage(lc, 0, 0, lc.width * SC, lc.height * SC);
+});
+</script></body></html>

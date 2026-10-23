@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{background:#2a2438;margin:0}canvas{image-rendering:pixelated}</style></head>
+<body><canvas id="c"></canvas>
+<script src="../dist/game.js"></script>
+<script>
+const q = new URLSearchParams(location.search);
+const SC = +(q.get('s') || 2), costume = q.get('c') || 'rossa';
+const anims = (q.get('a') || 'idle,walk,l1,l3,l4,heavy,jatk,hurt,knock,down,getup,victory,sp').split(',');
+const CW = 120, CH = 140;
+const cv = document.getElementById('c');
+cv.width = anims.length * CW * SC; cv.height = CAST.length * CH * SC;
+const ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
+const [lc, l] = makeCanvas(anims.length * CW, CAST.length * CH);
+l.fillStyle = '#3a3350'; l.fillRect(0, 0, lc.width, lc.height);
+CAST.forEach((c, ci) => {
+  const A = animsFor(c);
+  anims.forEach((an, ai) => {
+    const fr = A[an]; if (!fr) return;
+    const idx = ['l1','l2','l3','l4','heavy'].includes(an) ? 1 : (an === 'sp' ? Math.min(1, fr.length - 1) : 0);
+    const f = getFrame(c.look, costume, fr[idx].p, an + idx);
+    pixelShadow(l, ai * CW + 60, ci * CH + 128, 16, 3);
+    drawSprite(l, f, ai * CW + 60, ci * CH + 128, 1);
+  });
+});
+ctx.drawImage(lc, 0, 0, lc.width * SC, lc.height * SC);
+</script></body></html>

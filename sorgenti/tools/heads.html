@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{background:#2a2438;margin:0}canvas{image-rendering:pixelated}</style></head>
+<body><canvas id="c"></canvas>
+<script src="../dist/game.js"></script>
+<script>
+const SC = 10, ids = Object.keys(HEAD_SPECS);
+const cv = document.getElementById('c'); cv.width = (ids.length + 1) * 32 * SC; cv.height = 40 * SC;
+const ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
+const [lc, l] = makeCanvas((ids.length + 1) * 32, 40);
+l.fillStyle = '#4a4060'; l.fillRect(0, 0, lc.width, lc.height);
+[...ids, 'disco'].forEach((id, i) => {
+  const pb = id === 'disco' ? buildDiscoHead() : buildHead(HEAD_SPECS[id]);
+  const big = new PixBuf(HEAD_W + 2, HEAD_H + 2); for (let y = 0; y < HEAD_H; y++) for (let x = 0; x < HEAD_W; x++) big.d[(y + 1) * big.w + x + 1] = pb.d[y * HEAD_W + x];
+  big.outlineSel();
+  l.drawImage(big.toCanvas(), i * 32 + 2, 2);
+});
+ctx.drawImage(lc, 0, 0, lc.width * SC, lc.height * SC);
+</script></body></html>

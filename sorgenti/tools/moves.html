@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{background:#2a2438;margin:0;color:#fff;font:12px monospace}canvas{image-rendering:pixelated;display:block}</style></head>
+<body><canvas id="c"></canvas>
+<script src="../dist/game.js"></script>
+<script>
+// tutte le pose d'attacco di un musicista: ?c=indice&s=zoom
+const q = new URLSearchParams(location.search);
+const ci = +(q.get('c') || 0), SC = +(q.get('s') || 1.5);
+const c = CAST[ci], A = animsFor(c), MV = makeMoves(c);
+const names = [...new Set(Object.keys(MV).filter(k => !k.startsWith("w:") && MV[k].anim).map(k => MV[k].anim).concat(['stomp', 'sp']))].filter(n => A[n]);
+const CW = 96, CH = 128, cols = Math.max(...names.map(n => A[n].length));
+const cv = document.getElementById('c'); cv.width = (cols * CW + 60) * RS * SC; cv.height = names.length * CH * RS * SC;
+const [lc, l] = makeCanvas((cols * CW + 60) * RS, names.length * CH * RS); l.setTransform(RS, 0, 0, RS, 0, 0); l.imageSmoothingEnabled = false;
+l.fillStyle = '#463e5c'; l.fillRect(0, 0, cols * CW + 60, names.length * CH);
+names.forEach((n, ri) => {
+  l.fillStyle = ri % 2 ? '#4a4262' : '#423a58'; l.fillRect(0, ri * CH, cols * CW + 60, CH);
+  l.fillStyle = '#2e2838'; l.fillRect(0, ri * CH + CH - 12, cols * CW + 60, 12);
+  drawText(l, n, 4, ri * CH + 4, '#ffd23e');
+  A[n].forEach((fr, i) => { const f = getFrame(c.look, 'rossa', fr.p, n + i); pixelShadow(l, 60 + i * CW + 40, ri * CH + CH - 6, 16, 3); drawSprite(l, f, 60 + i * CW + 40, ri * CH + CH - 6, 1); });
+});
+const ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false; ctx.drawImage(lc, 0, 0, lc.width * SC, lc.height * SC);
+</script></body></html>
